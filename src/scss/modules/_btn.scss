@@ -1,0 +1,9 @@
+.btn-login {
+    background: $mainColor !important;
+    border-color: $mainColor;
+
+    &:focus {
+        border-color: $mainColor !important;
+        box-shadow: 0 0 0 0.2rem rgba($mainColor, 0.25);
+    }
+}
