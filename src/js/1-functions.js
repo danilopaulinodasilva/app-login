@@ -58,8 +58,6 @@ function authToken(token) {
         }
       });
 
-      console.log(response.status);
-
       switch (response.status) {
 
         case 401:
@@ -90,32 +88,51 @@ function authToken(token) {
 
 }
 
-function refreshToken(token) {
+function newToken(token) {
 
-  return new Promise((resolve,reject) => {
+  return new Promise(async (resolve,reject) => {
 
-    fetch("http://localhost:3000/token", {
-      "method": "POST",
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "body": {
+    try {
+
+      const body = {
         "token": token
+      };
+
+      const response = await fetch("http://localhost:3000/token", {
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": JSON.stringify(body)
+      });
+
+      switch (response.status) {
+
+        case 401:
+          reject(await response.json());
+          return;
+
+        case 200:
+          resolve(await response.json());
+          return;
+        
+        case 403:
+          reject(await response.json());
+          return;
+
+        default:
+          console.log(response);
+          reject(response.statusText);
+          return;
       }
-    })
+      
+    } catch (err) {
 
-    .then(function (response) {
-      response.json()
+      reject({
+        "message": err
+      });
 
-        .then(function (data) {
-          resolve(data); // token novo
-        });
-
-    })
-
-    .catch(err => {
-      console.error(err);
-    });
+    }
 
   });
 
@@ -127,59 +144,61 @@ function logout(token) {
 
 function checkRedirect() {
 
-  console.log("103: checkRedirect()");
+  console.log("Você não está em /login.html vou chamar o checkRedirect()");
 
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
 
   return new Promise((resolve, reject) => {
 
-    const loginPage = "http://localhost:8080/index.html";
+    const loginPage = "/login.html";
 
     if (accessToken == null || refreshToken === null) {
 
-      console.log("112: vc não tem nada no localstorage");
+      // console.log("Você não tem nada no localstorage, redirect");
 
-      if (window.location.href !== loginPage) {
-        // A url atual é DIFERENTE da que vc deve ir, some daqui
+      if (window.location.pathname !== loginPage) {
         reject(loginPage);
 
       }
 
     } else {
 
-      console.log("144: vc tem algo no localstorage");
+      // console.log("Você tem algo no localstorage");
 
       try {
 
-        console.log("151: vou tentar autenticar com accessToken");
+        // console.log("Vou tentar autenticar com accessToken");
         
         authToken(accessToken)
 
         .then((response) => {
-          console.log("blz, ta liberado");
+          console.log("Consegui autenticar o seu token, acesso liberado, pode ficar na página");
         })
 
         .catch((err) => {
-          console.log("160: não consegui com accessToken, vou pegar outro token pra vc", err);
 
-          refreshToken(refreshToken)
+          console.log("Não consegui com accessToken, vou pegar outro token pra você usando newToken()", err);
+
+          newToken(refreshToken)
 
           .then((response) => {
-          
+            
+            console.log("Ok, consegui um novo token pra você", response);
+
             authToken(accessToken)
 
-            .then((response) => {
-              console.log("blz, ta liberado");
-            })
+              .then((response) => {
+                // console.log("174",response);
+                // console.log("newToken blz, ta liberado");
 
-            .catch((err) => {
-              console.log("sai");
-            });
+              })
 
-            // localStorage.setItem("token",response);
-            // console.log("blz, ta liberado");
+              .catch((err) => {
+                // console.log("179",err);
+                // console.log("sai");
 
+              });
 
           })
 
@@ -190,15 +209,13 @@ function checkRedirect() {
         });
 
       } catch (err) {
-        console.log("176: outro erro que não 403", err);
+        // console.log("176: outro erro que não 403", err);
 
       }
 
     }
 
   });
-
-
 
 }
 

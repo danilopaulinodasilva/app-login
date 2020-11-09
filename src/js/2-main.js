@@ -47,10 +47,10 @@ loginForm.submit(function() {
 			username.removeClass('is-invalid');
 			password.removeClass('is-invalid');
 
-			console.log(data);
-
 			localStorage.setItem("accessToken",data.accessToken);
 			localStorage.setItem("refreshToken",data.refreshToken);
+
+			window.location.pathname = localStorage.getItem("whereTo") || "/index.html";
 
 		})
 
@@ -81,29 +81,26 @@ $(document).ready(function() {
 	// does not exist?
 	// >> index.html
 
-	checkRedirect()
+	
+	if(window.location.pathname !== "/login.html") {
+		
+		localStorage.setItem("whereTo",window.location.pathname);
 
-		.then((response) => {
-			console.log(response);
+		checkRedirect()
 
-		})
+				.then((response) => {
+					console.log("vai filhão!",response);
+					window.location.href = localStorage.getItem("whereTo");
+				})
 
-		.catch((err) => {
-			console.log(err);
-			
-			localStorage.clear();
-			window.location.href = err;
+				.catch((err) => {
+					console.log("sai daqui seu maldito", err);
+					localStorage.removeItem("accessToken");
+					localStorage.removeItem("refreshToken");
+					window.location.href = "login.html";
 
-		});
+				});
 
-	// authToken(localStorage.getItem("accessToken"))
-
-	// 	.then((response) => {
-	// 		console.log("Usuário autenticado, não faz nada");
-	// 	})
-
-	// 	.catch((err) => {
-	// 		console.log("Usuário não autenticado, manda pro index.html");
-	// 	});
+	}
 
 });
