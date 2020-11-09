@@ -164,52 +164,55 @@ function checkRedirect() {
 
     } else {
 
-      // console.log("Você tem algo no localstorage");
+      console.log("Você tem algo no localstorage");
 
       try {
 
-        // console.log("Vou tentar autenticar com accessToken");
+        console.log("Vou tentar autenticar com accessToken");
         
         authToken(accessToken)
 
-        .then((response) => {
-          console.log("Consegui autenticar o seu token, acesso liberado, pode ficar na página");
-        })
+          .then((response) => {
+            console.log("Consegui autenticar o seu token, acesso liberado, pode ficar na página");
+          })
 
-        .catch((err) => {
+          .catch((err) => {
 
           console.log("Não consegui com accessToken, vou pegar outro token pra você usando newToken()", err);
 
           newToken(refreshToken)
 
-          .then((response) => {
-            
-            console.log("Ok, consegui um novo token pra você", response);
+            .then((response) => {
+              
+              console.log("Ok, consegui um novo token pra você", response);
 
-            authToken(accessToken)
+              authToken(response.accessToken)
 
-              .then((response) => {
-                // console.log("174",response);
-                // console.log("newToken blz, ta liberado");
+                .then((response) => {
+                  console.log("O newToken() ta beleza, acesso liberado, pode ficar na página");
 
-              })
+                })
 
-              .catch((err) => {
-                // console.log("179",err);
-                // console.log("sai");
+                .catch((err) => {
 
-              });
+                  localStorage.clear();
+                  console.log("Deu ruim em alguma coisa, sai", err);
+                  window.location.pathname = "login.html"; 
 
-          })
+                });
 
-          .catch((err) => {
-            reject(err);
-          });
+            })
+
+            .catch((err) => {
+              reject(err);
+            });
 
         });
 
       } catch (err) {
-        // console.log("176: outro erro que não 403", err);
+        
+        console.log("Outro erro que não sei qual é", err);
+        window.location.pathname = "login.html"; 
 
       }
 
