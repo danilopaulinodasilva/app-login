@@ -82,6 +82,7 @@ gulp.task('watch', gulp.series(function () {
 		server: {
 			baseDir: paths.src
 		},
+		browser: ["microsoft-edge", "edge", "microsoft edge"],
 		port: 8080,
 		open: false
 	});

@@ -3,13 +3,30 @@ console.log('Carreguei o Main');
 const loginForm = $('#loginForm');
 const username = $("#email");
 const password = $("#password");
-const erro = $(".alert");
+const error = $(".alert-error");
+const ok = $(".alert-ok");
+
+username.blur(function() {
+	validateUsername(username);
+});
+
+password.blur(function() {
+	validatePassword(password);
+});
 
 loginForm.submit(function() {
-    var form = $(this);
+	var form = $(this);
+	
     if (form[0].checkValidity() === false) {
 		event.preventDefault();
 		event.stopPropagation();
+
+		form.removeClass('was-validated');
+		form.addClass('needs-validation');
+		
+		validateUsername(username);
+		validatePassword(password);
+
 	  
     } else {
 		event.preventDefault();
@@ -18,10 +35,18 @@ loginForm.submit(function() {
 		getToken(username.val(),password.val())
 
 		.then((data) => {
-			erro.html("");
-			erro.addClass("d-none");
 
 			form.addClass('was-validated');
+
+			error.html("");
+			error.addClass("d-none");
+			
+			ok.html("Sucesso! Você será redirecionado, aguarde...");
+			ok.removeClass("d-none");
+		
+			username.removeClass('is-invalid');
+			password.removeClass('is-invalid');
+
 			console.log(data);
 
 			localStorage.setItem("accessToken",data.accessToken);
@@ -30,8 +55,15 @@ loginForm.submit(function() {
 		})
 
 		.catch((err) => {
-			erro.html(err.message);
-			erro.removeClass("d-none");
+			error.html(err.message);
+			error.removeClass("d-none");
+
+			username.removeClass('is-valid');
+			username.addClass('is-invalid');
+
+			password.removeClass('is-valid');
+			password.addClass('is-invalid');
+
 			console.log(err);
 
 		});

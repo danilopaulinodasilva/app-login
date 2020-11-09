@@ -201,3 +201,17 @@ function checkRedirect() {
 
 
 }
+
+function emptyField(field) {
+  if (field.val() === "" && field.val().length === 0 || field.val() == null)
+  return true;
+  return false;
+
+}
+
+function regexField(field, regex) {
+  if (field.val().match(regex))
+  return true;
+  return false;
+
+}
