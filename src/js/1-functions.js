@@ -140,6 +140,50 @@ function newToken(token) {
 
 function logout(token) {
 
+  return new Promise(async (resolve, reject) => {
+
+    try {
+
+      const body = {
+        "token": token
+      };
+
+      const response = await fetch("http://localhost:3000/logout", {
+        "method": "DELETE",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": JSON.stringify(body)
+      });
+
+      console.log(response);
+
+      switch (response.status) {
+
+        case 204:
+          resolve("saiu");
+          return;
+        
+        case 403:
+          reject(await response.json());
+          return;
+
+        default:
+          console.log(response);
+          reject(response.statusText);
+          return;
+      }
+      
+    } catch (err) {
+
+      reject({
+        "message": err
+      });
+
+    }
+
+  });
+
 }
 
 function checkRedirect() {
@@ -174,10 +218,12 @@ function checkRedirect() {
 
           .then((response) => {
             console.log("Consegui autenticar o seu token, acesso liberado, pode ficar na página");
+            $("body > .animationLoading").hide();
           })
 
           .catch((err) => {
-
+          
+          // jwt expired?
           console.log("Não consegui com accessToken, vou pegar outro token pra você usando newToken()", err);
 
           newToken(refreshToken)

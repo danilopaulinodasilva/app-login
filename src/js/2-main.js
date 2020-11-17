@@ -5,13 +5,28 @@ const username = $("#email");
 const password = $("#password");
 const error = $(".alert-error");
 const ok = $(".alert-ok");
+const logoutBtn = $("#logout");
 
 username.blur(function() {
 	validateUsername(username);
 });
 
 password.blur(function() {
-	validatePassword(password);
+	validatePassword(password)
+});
+
+logoutBtn.click(function() {
+	logout(localStorage.getItem("refreshToken"))
+
+	.then((response) => {
+		console.log("vc ", response);
+		window.location.pathname = "login.html"
+		localStorage.clear();
+	})
+
+	.catch((err) => {
+		console.log("fudeu aqui", err);
+	})
 });
 
 loginForm.submit(function() {
