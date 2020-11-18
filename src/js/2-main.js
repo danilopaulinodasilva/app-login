@@ -8,12 +8,12 @@ const ok = $(".alert-ok");
 const logoutBtn = $("#logout");
 
 usernameField.on('blur', function() {
-	validateUsername(username);
+	validateUsername(usernameField);
 
 });
 
 passwordField.on('blur', function() {
-	validatePassword(password);
+	validatePassword(passwordField);
 
 });
 
@@ -42,15 +42,15 @@ loginForm.on('submit', function(event) {
 		form.removeClass('was-validated');
 		form.addClass('needs-validation');
 		
-		validateUsername(username);
-		validatePassword(password);
+		validateUsername(usernameField);
+		validatePassword(passwordField);
 
 	  
     } else {
 		event.preventDefault();
 		event.stopPropagation();
 		
-		getToken(username.val(),password.val())
+		getToken(usernameField.val(),passwordField.val())
 
 		.then((data) => {
 
@@ -62,8 +62,8 @@ loginForm.on('submit', function(event) {
 			ok.html("Sucesso! Você será redirecionado, aguarde...");
 			ok.removeClass("d-none");
 		
-			username.removeClass('is-invalid');
-			password.removeClass('is-invalid');
+			usernameField.removeClass('is-invalid');
+			passwordField.removeClass('is-invalid');
 
 			localStorage.setItem("accessToken",data.accessToken);
 			localStorage.setItem("refreshToken",data.refreshToken);
@@ -76,11 +76,11 @@ loginForm.on('submit', function(event) {
 			error.html(err.message);
 			error.removeClass("d-none");
 
-			username.removeClass('is-valid');
-			username.addClass('is-invalid');
+			usernameField.removeClass('is-valid');
+			usernameField.addClass('is-invalid');
 
-			password.removeClass('is-valid');
-			password.addClass('is-invalid');
+			passwordField.removeClass('is-valid');
+			passwordField.addClass('is-invalid');
 
 			console.log(err);
 
