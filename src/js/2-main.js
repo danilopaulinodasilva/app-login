@@ -1,21 +1,23 @@
 console.log('Carreguei o Main');
 
 const loginForm = $('#loginForm');
-const username = $("#email");
-const password = $("#password");
+const usernameField = $("#email");
+const passwordField = $("#password");
 const error = $(".alert-error");
 const ok = $(".alert-ok");
 const logoutBtn = $("#logout");
 
-username.blur(function() {
+usernameField.on('blur', function() {
 	validateUsername(username);
+
 });
 
-password.blur(function() {
-	validatePassword(password)
+passwordField.on('blur', function() {
+	validatePassword(password);
+
 });
 
-logoutBtn.click(function() {
+logoutBtn.on('click', function() {
 	logout(localStorage.getItem("refreshToken"))
 
 	.then((response) => {
@@ -27,9 +29,10 @@ logoutBtn.click(function() {
 	.catch((err) => {
 		console.log("fudeu aqui", err);
 	})
+
 });
 
-loginForm.submit(function() {
+loginForm.on('submit', function(event) {
 	var form = $(this);
 	
     if (form[0].checkValidity() === false) {
@@ -86,35 +89,24 @@ loginForm.submit(function() {
 	}
 });
 
-$(document).ready(function() {
+$(function(){
 
-	// exist a localstorage w/ token?
-	// >> if yes, try to authToken
-	// >> 401? refresh
-	// >> 200? does nothing
-
-	// does not exist?
-	// >> index.html
-
-	
 	if(window.location.pathname !== "/login.html") {
 		
 		localStorage.setItem("whereTo",window.location.pathname);
 
 		checkRedirect()
 
-				.then((response) => {
-					console.log("vai filhão!",response);
-					window.location.href = localStorage.getItem("whereTo");
-				})
+			.then((response) => {
+				window.location.href = localStorage.getItem("whereTo");
+			})
 
-				.catch((err) => {
-					console.log("sai daqui seu maldito", err);
-					localStorage.removeItem("accessToken");
-					localStorage.removeItem("refreshToken");
-					window.location.href = "login.html";
+			.catch((err) => {
+				localStorage.removeItem("accessToken");
+				localStorage.removeItem("refreshToken");
+				window.location.href = "login.html";
 
-				});
+			});
 
 	}
 
