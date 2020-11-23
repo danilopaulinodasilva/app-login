@@ -1,5 +1,159 @@
 console.log('Carreguei o Functions');
 
+function getIp() {
+
+  return new Promise (async (resolve,reject) => {
+
+    const response = await fetch("http://www.geoplugin.net/json.gp?jsoncallback=?", {
+      "method": "GET",
+      "headers": {}
+    });
+
+    const text = await response.text();
+    const replaceBug = text.replace(/^%3F\(|\)/g,"");
+    resolve(btoa(replaceBug));
+
+  });
+
+}
+
+async function resolveIp() {
+
+  return await getIp();
+
+}
+
+function log(guid) {
+
+  return new Promise(async (resolve,reject) => {
+
+    const body = {
+      "guid": guid,
+      "ip": await resolveIp()
+    };
+
+    try {
+  
+      const response = await fetch("http://localhost:3000/log", {
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": JSON.stringify(body)
+      });
+
+      switch (response.status) {
+          case 400:
+            reject(response);
+            return;
+          case 204:
+            console.log("[Log] Login registered successfully")
+            resolve(response);
+            return;
+          default:
+            reject(response);
+            return;
+            
+      }
+
+    } catch (err) {
+      console.log(err);
+      reject(err);
+
+    }
+
+  });
+
+}
+
+function page(guid) {
+  
+  return new Promise(async (resolve,reject) => {
+
+    const body = {
+      "guid": guid,
+      "page": window.location.href,
+      "ip": await resolveIp()
+    };
+
+    try {
+  
+      const response = await fetch("http://localhost:3000/page", {
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": JSON.stringify(body)
+      });
+
+      switch (response.status) {
+          case 400:
+            reject(response);
+            return;
+          case 204:
+            console.log("[Log] Page registered successfully")
+            resolve(response);
+            return;
+          default:
+            reject(response);
+            return;
+            
+      }
+
+    } catch (err) {
+      console.log(err);
+      reject(err);
+
+    }
+
+  });
+
+}
+
+function download(guid,file) {
+  
+  return new Promise(async (resolve,reject) => {
+
+    const body = {
+      "guid": guid,
+      "file": file,
+      "ip": await resolveIp()
+    };
+
+    try {
+  
+      const response = await fetch("http://localhost:3000/download", {
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": JSON.stringify(body)
+      });
+
+      switch (response.status) {
+          case 400:
+            reject(response);
+            return;
+          case 204:
+            console.log("[Log] Download registered successfully")
+            resolve(response);
+            return;
+          default:
+            reject(response);
+            return;
+
+      }
+
+    } catch (err) {
+      console.log(err);
+      reject(err);
+
+    }
+
+  });
+
+}
+
 function getToken(username, password) {
 
   return new Promise(async (resolve, reject) => {
@@ -192,6 +346,7 @@ function checkRedirect() {
 
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
+  const guid = localStorage.getItem("guid");
 
   return new Promise((resolve, reject) => {
 
@@ -216,9 +371,10 @@ function checkRedirect() {
         
         authToken(accessToken)
 
-          .then((response) => {
+          .then(async (response) => {
             console.log("Consegui autenticar o seu token, acesso liberado, pode ficar na página");
             $("body > .animationLoading").hide();
+            await page(guid);
           })
 
           .catch((err) => {
@@ -234,14 +390,15 @@ function checkRedirect() {
 
               authToken(response.accessToken)
 
-                .then((response) => {
+                .then(async (response) => {
                   console.log("O newToken() ta beleza, acesso liberado, pode ficar na página");
+                  await page(guid);
 
                 })
 
                 .catch((err) => {
 
-                  localStorage.clear();
+                  localStorage.clear()
                   console.log("Deu ruim em alguma coisa, sai", err);
                   window.location.pathname = "login.html"; 
 

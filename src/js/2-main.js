@@ -3,36 +3,27 @@ console.log('Carreguei o Main');
 const loginForm = $('#loginForm');
 const usernameField = $("#email");
 const passwordField = $("#password");
+
 const error = $(".alert-error");
 const ok = $(".alert-ok");
-const logoutBtn = $("#logout");
 
-usernameField.on('blur', function() {
+const downloadBtn = $("#download");
+
+usernameField.on('blur', () => {
 	validateUsername(usernameField);
 
 });
 
-passwordField.on('blur', function() {
+passwordField.on('blur', () => {
 	validatePassword(passwordField);
 
 });
 
-logoutBtn.on('click', function() {
-	logout(localStorage.getItem("refreshToken"))
+downloadBtn.on('click', () => {
+	download(filename,guid);
+})
 
-	.then((response) => {
-		console.log("vc ", response);
-		window.location.pathname = "login.html"
-		localStorage.clear();
-	})
-
-	.catch((err) => {
-		console.log("fudeu aqui", err);
-	})
-
-});
-
-loginForm.on('submit', function(event) {
+loginForm.on('submit', function (event) {
 	var form = $(this);
 	
     if (form[0].checkValidity() === false) {
@@ -52,7 +43,7 @@ loginForm.on('submit', function(event) {
 		
 		getToken(usernameField.val(),passwordField.val())
 
-		.then((data) => {
+		.then(async (data) => {
 
 			form.addClass('was-validated');
 
@@ -65,9 +56,11 @@ loginForm.on('submit', function(event) {
 			usernameField.removeClass('is-invalid');
 			passwordField.removeClass('is-invalid');
 
+			localStorage.setItem("guid",data.guid);
 			localStorage.setItem("accessToken",data.accessToken);
 			localStorage.setItem("refreshToken",data.refreshToken);
 
+            await log(data.guid);
 			window.location.pathname = localStorage.getItem("whereTo") || "/index.html";
 
 		})
@@ -89,7 +82,7 @@ loginForm.on('submit', function(event) {
 	}
 });
 
-$(function(){
+$(() => {
 
 	if(window.location.pathname !== "/login.html") {
 		
@@ -99,6 +92,7 @@ $(function(){
 
 			.then((response) => {
 				window.location.href = localStorage.getItem("whereTo");
+				
 			})
 
 			.catch((err) => {

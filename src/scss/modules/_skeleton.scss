@@ -1,0 +1,46 @@
+.animationLoading {
+    background: #f1f1f1;
+    display: block;
+    height: 324px;
+    width: 100%;
+}
+
+@keyframes animate {
+    from {
+        transition: none;
+    }
+
+    to {
+        background-color: #f6f7f8;
+        transition: all 0.3s ease-out;
+    }
+}
+
+#container {
+    width: 100%;
+    height: 30px;
+}
+
+#one,
+#two {
+    position: relative;
+    background-color: #ddd;
+    height: 6px;
+    animation-name: animate;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+#one {
+    left: 0;
+    height: 80px;
+    width: 100%;
+}
+
+#two {
+    left: 0;
+    top: 10px;
+    height:500px;
+    margin:12px;
+}

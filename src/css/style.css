@@ -8150,7 +8150,12 @@ a.text-dark:hover, a.text-dark:focus {
 
 /*# sourceMappingURL=bootstrap.css.map */
 html, body {
-  height: 100%; }
+  height: 100%;
+  background: #f1f1f1;
+  overflow: hidden; }
+
+.bg-dark {
+  background: #333 !important; }
 
 .my-login-page {
   background-color: #333;
@@ -8189,11 +8194,30 @@ html, body {
   border-width: 2.3px; }
 
 .btn-login {
-  background: #ffc107 !important;
-  border-color: #ffc107; }
+  background: #f0dd0d !important;
+  border-color: #f0dd0d; }
+  .btn-login:hover {
+    background: #d8c70c !important;
+    border-color: #d8c70c !important; }
   .btn-login:focus {
-    border-color: #ffc107 !important;
-    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25); }
+    border-color: #f0dd0d !important;
+    box-shadow: 0 0 0 0.2rem rgba(240, 221, 13, 0.25); }
+
+.btn-warning {
+  background: #f0dd0d;
+  border-color: #f0dd0d; }
+  .btn-warning:hover {
+    background: #e6d40c;
+    border-color: #e6d40c; }
+
+.btn-xs {
+  font-size: .8rem;
+  height: 27px; }
+  .btn-xs svg {
+    margin-right: 4px;
+    margin-top: -1px;
+    width: 16px;
+    height: 16px; }
 
 @media screen and (max-width: 425px) {
   .my-login-page .card-wrapper {
@@ -8205,5 +8229,49 @@ html, body {
     padding: 0; }
   .my-login-page .card.fat .card-body {
     padding: 15px; } }
+
+#table {
+  margin-top: 1rem; }
+
+.fancy-panel-header-tools {
+  right: 7px !important; }
+
+.animationLoading {
+  background: #f1f1f1;
+  display: block;
+  height: 324px;
+  width: 100%; }
+
+@keyframes animate {
+  from {
+    transition: none; }
+  to {
+    background-color: #f6f7f8;
+    transition: all 0.3s ease-out; } }
+
+#container {
+  width: 100%;
+  height: 30px; }
+
+#one,
+#two {
+  position: relative;
+  background-color: #ddd;
+  height: 6px;
+  animation-name: animate;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; }
+
+#one {
+  left: 0;
+  height: 80px;
+  width: 100%; }
+
+#two {
+  left: 0;
+  top: 10px;
+  height: 500px;
+  margin: 12px; }
 
 /*# sourceMappingURL=style.css.map */

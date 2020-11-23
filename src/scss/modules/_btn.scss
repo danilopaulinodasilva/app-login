@@ -2,8 +2,35 @@
     background: $mainColor !important;
     border-color: $mainColor;
 
+    &:hover {
+        background: darken($mainColor,5%) !important;
+        border-color: darken($mainColor,5%) !important;
+    }
+
     &:focus {
         border-color: $mainColor !important;
         box-shadow: 0 0 0 0.2rem rgba($mainColor, 0.25);
+    }
+}
+
+.btn-warning {
+    background: $mainColor;
+    border-color: $mainColor;
+
+    &:hover {
+        background: darken($mainColor,2%);
+        border-color: darken($mainColor,2%);
+    }
+}
+
+.btn-xs {
+    font-size: .8rem;
+    height: 27px;
+
+    svg {
+        margin-right: 4px;
+        margin-top:-1px;
+        width: 16px;
+        height: 16px;
     }
 }
